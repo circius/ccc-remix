@@ -10,6 +10,7 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import StaticFileHandler, Application
 from tornado.websocket import WebSocketHandler
+import webbrowser
 
 import logging
 logger = logging.getLogger(__name__)
@@ -18,8 +19,9 @@ is_running = True
 sockets = []
 settings = {
     'cameras': [],
-    'title': ''
+    'title': 'Untitled'
 }
+base = 'scan'
 
 def get_cameras():
     p = subprocess.Popen(['gphoto2', '--auto-detect'],
@@ -32,13 +34,26 @@ def get_cameras():
         cameras = []
     return cameras
 
+def get_titles():
+    titles = [title for title in os.listdir(base) if os.path.isdir(os.path.join(base, title))]
+    titles.sort()
+    return titles
+
+def update_title(title):
+    settings['title'] = title
+    path = os.path.join(base, settings['title'].replace('/', '_'))
+    if os.path.exists(path):
+        pages = sorted([os.path.join(path, image) for image in os.listdir(path)])
+        trigger_event('pages', pages)
+
 def capture_page(page):
     print('capture page', page)
     if settings['title']:
-        prefix = os.path.join('scan', settings['title'])
+        prefix = os.path.join(base, settings['title'].replace('/', '_'))
     else:
-        prefix = 'scan'
+        prefix = base
     left = os.path.join(prefix, '%06d_left.jpg' % page)
+    page += 1
     right = os.path.join(prefix, '%06d_right.jpg' % page)
     cameras = settings['cameras']
     if cameras:
@@ -55,12 +70,23 @@ def capture_page(page):
         ])
         c1.wait()
         c2.wait()
+        error = []
+        if not os.path.exists(left):
+            error += ['left missing']
+        if not os.path.exists(right):
+            error += ['right missing']
+        if error:
+            trigger_event('error', 'capture failed %s' % ', '.join(error))
+            print('capture failed %s' % ', '.join(error))
+            return
         for cmd in (
             ['mogrify', '-rotate', '-90', left],
             ['mogrify', '-rotate', '90', right]
         ):
             subprocess.call(cmd)
-    trigger_event('page', '%06d' % page)
+        trigger_event('page', [left, right])
+    else:
+        trigger_event('error', 'Cameras Missing')
 
 class Tasks(Thread):
     def __init__(self):
@@ -79,6 +105,8 @@ class Tasks(Thread):
                         capture_page(data)
                     elif action == 'cameras':
                         settings['cameras'] = data
+                    elif action == 'title':
+                        update_title(data)
                 except:
                     logger.debug('fail', exc_info=True)
                     pass
@@ -92,13 +120,13 @@ class Tasks(Thread):
         if is_running:
             self.q.put((action, data))
 
-
 class WSHandler(WebSocketHandler):
 
     def open(self):
         if self not in sockets:
             sockets.append(self)
         trigger_event('cameras', get_cameras())
+        trigger_event('titles', get_titles())
 
     def on_message(self, message):
         tasks.queue(*json.loads(message))
@@ -149,7 +177,7 @@ if __name__ == '__main__':
         is_running = False
         tasks.join()
     signal.signal(signal.SIGTERM, shutdown)
-
+    webbrowser.open_new_tab('http://%s:%s' % (address, port))
     try:
         main.start()
     except:

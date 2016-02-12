@@ -1,0 +1,36 @@
+body {
+    font-family: sans-serif;
+}
+
+#error {
+    text-align: center;
+    margin-top: 23%;
+    color: red;
+    font-size: 48px;
+    position: relative;
+}
+
+.info {
+    text-align: center;
+    margin-top: 23%;
+    color: black;
+    font-size: 48px;
+    position: relative;
+}
+
+.pagenumber {
+    width: 48%;
+    top: 0;
+    bottom:0;
+    position: absolute;
+    color: white;
+    font-size: 48px;
+}
+.camera {
+    width: 48%;
+    top: 50px;
+    bottom:0;
+    position: absolute;
+    color: white;
+    font-size: 18px;
+}
