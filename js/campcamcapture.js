@@ -154,9 +154,10 @@ ccc.updateImages = function(pages) {
 ccc.getCameraName = function(i) {
     var name, cameras = this.cameras;
     if (cameras[i]) {
-        name = cameras[i][0] + ' (' + cameras[i][1].split(',').pop() + ')';
+        //name = cameras[i][0] + ' (' + cameras[i][1].split(',').pop() + ')';
+        name = cameras[i][0] + ' (' + cameras[i][2] + ')';
     } else {
-        name = 'Camera Missing'
+        name = 'Camera Missing';
     }
     return name;
 }

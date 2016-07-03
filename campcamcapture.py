@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 # apt-get install gphoto2 graphicsmagick-imagemagick-compat
-import os
-import subprocess
 import json
+import os
+import re
 import signal
+import subprocess
+import sys
 from queue import Queue
 from threading import Thread
 from tornado.httpserver import HTTPServer
@@ -23,6 +25,22 @@ settings = {
 }
 base = 'scan'
 
+def get_usbport(device):
+    device = device.split(',')[-1].lstrip('0')
+    p = subprocess.Popen(['lsusb', '-t'],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = p.communicate()
+    cameras = [
+        re.compile('Port (\d+): Dev (\d+),').findall(c)[0]
+        for c in stdout.decode().split('\n') if 'Port' in c
+    ]
+    port = [p[0] for p in cameras if p[1] == device]
+    if port:
+        port = port[0]
+    else:
+        port = None
+    return port
+
 def get_cameras():
     p = subprocess.Popen(['gphoto2', '--auto-detect'],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -32,7 +50,9 @@ def get_cameras():
         cameras = [[p.strip() for p in c.split('usb:')] for c in cameras.split('\n')]
         for c in cameras:
             c[1] = 'usb:' + c[1]
+            c.append(get_usbport(c[1]))
         print("CAMERAS: {}".format(cameras))
+
     else:
         cameras = []
     return cameras
@@ -61,21 +81,23 @@ def capture_page(page):
     cameras = settings['cameras']
     if cameras:
         print(cameras)
-        cam, port = cameras[0]
+        cam, port, usbport = cameras[0]
         cmd = [
             'gphoto2',
             '--port', port,
-            '--force-overwrite', '--capture-image-and-download',
+            '--force-overwrite',
+            '--capture-image-and-download',
             '--filename', left
         ]
         print(" ".join(cmd))
         c1 = subprocess.Popen(cmd)
 
-        cam, port = cameras[1]
+        cam, port, usbport = cameras[1]
         cmd = [
             'gphoto2',
             '--port', port,
-            '--force-overwrite', '--capture-image-and-download',
+            '--force-overwrite',
+            '--capture-image-and-download',
             '--filename', right
         ]
         print(" ".join(cmd))
@@ -167,7 +189,11 @@ def trigger_event(event, data):
 
 if __name__ == '__main__':
     port = 8008
-    address = '127.0.0.1'
+    if len(sys.argv) == 1:
+        address = '127.0.0.1'
+    else:
+        address = '0.0.0.0'
+        port = int(sys.argv[1])
     static_path = os.path.abspath(os.path.dirname(__name__))
     handlers = [
         (r'/ws', WSHandler),
@@ -190,7 +216,8 @@ if __name__ == '__main__':
         is_running = False
         tasks.join()
     signal.signal(signal.SIGTERM, shutdown)
-    webbrowser.open_new_tab('http://%s:%s' % (address, port))
+    if address == '127.0.0.1':
+        webbrowser.open_new_tab('http://%s:%s' % (address, port))
     try:
         main.start()
     except:
