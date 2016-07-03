@@ -58,6 +58,8 @@ def get_cameras():
     return cameras
 
 def get_titles():
+    if not os.path.exists(base):
+        os.makedirs(base)
     titles = [title for title in os.listdir(base) if os.path.isdir(os.path.join(base, title))]
     titles.sort()
     return titles
