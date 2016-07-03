@@ -29,7 +29,10 @@ def get_cameras():
     stdout, stderr = p.communicate()
     cameras = stdout.decode().split('-'*58)[-1].strip()
     if cameras:
-        cameras = [c.split('usb:')[0].strip() for c in cameras.split('\n')]
+        cameras = [[p.strip() for p in c.split('usb:')] for c in cameras.split('\n')]
+        for c in cameras:
+            c[1] = 'usb:' + c[1]
+        print("CAMERAS: {}".format(cameras))
     else:
         cameras = []
     return cameras
@@ -58,16 +61,25 @@ def capture_page(page):
     cameras = settings['cameras']
     if cameras:
         print(cameras)
-        c1 = subprocess.Popen([
-            'gphoto2', '--camera', cameras[0],
+        cam, port = cameras[0]
+        cmd = [
+            'gphoto2',
+            '--port', port,
             '--force-overwrite', '--capture-image-and-download',
             '--filename', left
-        ])
-        c2 = subprocess.Popen([
-            'gphoto2', '--camera', cameras[1],
+        ]
+        print(" ".join(cmd))
+        c1 = subprocess.Popen(cmd)
+
+        cam, port = cameras[1]
+        cmd = [
+            'gphoto2',
+            '--port', port,
             '--force-overwrite', '--capture-image-and-download',
             '--filename', right
-        ])
+        ]
+        print(" ".join(cmd))
+        c2 = subprocess.Popen(cmd)
         c1.wait()
         c2.wait()
         error = []
@@ -105,6 +117,7 @@ class Tasks(Thread):
                         capture_page(data)
                     elif action == 'cameras':
                         settings['cameras'] = data
+                        trigger_event('cameras', data)
                     elif action == 'title':
                         update_title(data)
                 except:
@@ -153,7 +166,7 @@ def trigger_event(event, data):
             logger.debug('failed to send to ws %s %s %s', ws, event, data, exc_info=True)
 
 if __name__ == '__main__':
-    port = 8000
+    port = 8008
     address = '127.0.0.1'
     static_path = os.path.abspath(os.path.dirname(__name__))
     handlers = [

@@ -150,16 +150,29 @@ ccc.updateImages = function(pages) {
     this.pages.push(pages[1]);
     */
 };
+ccc.getCameraName = function(i) {
+    var name, cameras = this.cameras;
+    if (cameras[i]) {
+        name = cameras[i][0] + ' (' + cameras[i][1].split(',').pop() + ')';
+    } else {
+        name = 'Camera Missing'
+    }
+    return name;
+}
 ccc.updateCameras = function(cameras) {
+    var i, name;
     ccc.cameras = cameras;
     $('.camera').remove();
+    console.log('update cameras', cameras);
+
     $('<div>').addClass('camera').css({
         left:0, 'text-align': 'right',
-    }).html(cameras[0] || 'Camera Missing').appendTo(document.body);
+    }).html(this.getCameraName(0)).appendTo(document.body);
+
     $('<div>').addClass('camera').css({
         right:0, 'text-align': 'left',
-    }).html(cameras[1] || 'Camera Missing').appendTo(document.body);
+    }).html(this.getCameraName(1)).appendTo(document.body);
 };
 ccc.flipCameras = function() {
-    this.setCameras([this.cameras[1]. this.cameras[0]]);
+    this.setCameras([this.cameras[1], this.cameras[0]]);
 };
