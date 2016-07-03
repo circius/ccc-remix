@@ -54,10 +54,12 @@ ccc.init = function() {
     document.body.appendChild(ccc.right);
     this.reconnect();
     document.body.addEventListener("keydown", function(event) {
-        if (event.code == 'KeyT') {
+        if (event.code == 'Space') {
             $('.info').remove()
             ccc.capture(ccc.page);
             ccc.page = ccc.page + 2;
+        } else if (event.code == 'KeyT') {
+            $('.info').html('use space to capture')
         } else if (event.code == 'KeyF') {
             ccc.flipCameras();
         } else if (event.code == 'ArrowLeft') {
@@ -118,7 +120,7 @@ ccc.updateTitles = function(titles) {
             click: function() {
                 if (title == new_book) {
                     title = prompt('Enter title');
-                    $('<div>').addClass('info').html('Press T to capture first page').appendTo(document.body);
+                    $('<div>').addClass('info').html('Press SPACE to capture first page').appendTo(document.body);
                 }
                 ccc.setTitle(title);
             }
