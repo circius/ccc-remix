@@ -22,7 +22,7 @@ body {
     width: 48%;
     top: 0;
     bottom:0;
-    position: absolute;
+    position: fixed;
     color: white;
     font-size: 48px;
 }
@@ -30,7 +30,7 @@ body {
     width: 48%;
     top: 50px;
     bottom:0;
-    position: absolute;
+    position: fixed;
     color: white;
     font-size: 18px;
 }
