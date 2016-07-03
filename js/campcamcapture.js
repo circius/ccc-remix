@@ -1,4 +1,5 @@
 ccc = {};
+ccc.pages = [];
 ccc.page = 1;
 ccc.pageOffset = 0;
 
