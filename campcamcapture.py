@@ -112,7 +112,7 @@ def capture_page(page):
         if not os.path.exists(right):
             error += ['right missing']
         if error:
-            trigger_event('error', 'capture failed %s' % ', '.join(error))
+            trigger_event('error', 'capture failed %s<br>(Reconnect camreas and press R)' % ', '.join(error))
             print('capture failed %s' % ', '.join(error))
             return
         for cmd in (
@@ -142,6 +142,9 @@ class Tasks(Thread):
                     elif action == 'cameras':
                         settings['cameras'] = data
                         trigger_event('cameras', data)
+                    elif action == 'detectcameras':
+                        settings['cameras'] = get_cameras()
+                        trigger_event('cameras', settings['cameras'])
                     elif action == 'title':
                         update_title(data)
                 except:
@@ -162,7 +165,8 @@ class WSHandler(WebSocketHandler):
     def open(self):
         if self not in sockets:
             sockets.append(self)
-        trigger_event('cameras', get_cameras())
+        settings['cameras'] = get_cameras()
+        trigger_event('cameras', settings['cameras'])
         trigger_event('titles', get_titles())
 
     def on_message(self, message):
