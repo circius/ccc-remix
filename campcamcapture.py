@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# apt-get install gphoto2 graphicsmagick-imagemagick-compat
+# apt-get install gphoto2 graphicsmagick-imagemagick-compat python3-tornado
 import json
 import os
 import re
