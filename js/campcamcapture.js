@@ -59,9 +59,11 @@ ccc.init = function() {
             ccc.capture(ccc.page);
             ccc.page = ccc.page + 2;
         } else if (event.code == 'KeyT') {
-            $('.info').html('use space to capture')
+            $('<div>').addClass('info').html('use SPACE to capture next page').appendTo(document.body);
         } else if (event.code == 'KeyF') {
             ccc.flipCameras();
+        } else if (event.code == 'KeyR') {
+            ccc.detectCameras();
         } else if (event.code == 'ArrowLeft') {
             var next = ccc.page - 4;
             if (next < 1) {
@@ -91,6 +93,10 @@ ccc.capture = function(page) {
 };
 ccc.setCameras = function(cameras) {
     this.post('cameras', cameras);
+};
+ccc.detectCameras = function() {
+    $('.info').remove()
+    this.post('detectcameras', '');
 };
 ccc.setTitle = function(title) {
     ccc.post('title', title);
