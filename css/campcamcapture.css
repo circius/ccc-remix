@@ -4,10 +4,11 @@ body {
 
 #error {
     text-align: center;
-    margin-top: 23%;
+    margin-top: 100px;
     color: red;
     font-size: 48px;
-    position: relative;
+    position: fixed;
+    width: 100%;
 }
 
 .info {
