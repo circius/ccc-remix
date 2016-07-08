@@ -58,6 +58,7 @@ ccc.init = function() {
             $('.info').remove()
             ccc.capture(ccc.page);
             ccc.page = ccc.page + 2;
+            event.preventDefault();
         } else if (event.code == 'KeyT') {
             $('<div>').addClass('info').html('use SPACE to capture next page').appendTo(document.body);
         } else if (event.code == 'KeyF') {
