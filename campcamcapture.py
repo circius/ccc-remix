@@ -122,7 +122,7 @@ def capture_page(page):
             subprocess.call(cmd)
         trigger_event('page', [left, right])
     else:
-        trigger_event('error', 'Cameras Missing')
+        trigger_event('error', 'Cameras Missing<br>(Reconnect camreas and press R)')
 
 class Tasks(Thread):
     def __init__(self):
