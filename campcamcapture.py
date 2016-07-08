@@ -200,7 +200,7 @@ if __name__ == '__main__':
     else:
         address = '0.0.0.0'
         port = int(sys.argv[1])
-    static_path = os.path.abspath(os.path.dirname(__name__))
+    static_path = os.path.abspath(os.path.dirname(__file__))
     handlers = [
         (r'/ws', WSHandler),
         (r'/(.*)', StaticFileHandler, {'path': static_path, 'default_filename': 'index.html'}),
