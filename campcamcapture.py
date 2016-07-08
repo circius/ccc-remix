@@ -112,7 +112,7 @@ def capture_page(page):
         if not os.path.exists(right):
             error += ['right missing']
         if error:
-            trigger_event('error', 'capture failed %s<br>(Reconnect camreas and press R)' % ', '.join(error))
+            trigger_event('error', 'capture failed %s<br>(Reconnect cameras and press R)' % ', '.join(error))
             print('capture failed %s' % ', '.join(error))
             return
         for cmd in (
@@ -122,7 +122,7 @@ def capture_page(page):
             subprocess.call(cmd)
         trigger_event('page', [left, right])
     else:
-        trigger_event('error', 'Cameras Missing<br>(Reconnect camreas and press R)')
+        trigger_event('error', 'Cameras Missing<br>(Reconnect cameras and press R)')
 
 class Tasks(Thread):
     def __init__(self):
