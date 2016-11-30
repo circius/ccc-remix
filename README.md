@@ -17,6 +17,12 @@ run campcampcapture:
     ./campcamcapture.py
 
 
+## Preparing Cameras
+
+make sure camera is not mounted and shows up in gphoto2 --auto-detect
+some cameras to set capture target, try running ./setupcamera.py
+
+
 ## Usage
 
 to use campcamcapture, open browser at http://127.0.0.1:8008/
