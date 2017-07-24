@@ -6,7 +6,7 @@ ccc.pageOffset = 0;
 ccc.reconnect = function() {
     var ws = new WebSocket('ws://' + document.location.host + '/ws');
     ws.onopen = function(event) {
-        //
+      //
     };
     ws.onerror = function(event) {
         ws.close();
@@ -55,7 +55,7 @@ ccc.init = function() {
     this.reconnect();
     document.body.addEventListener("keydown", function(event) {
         if (event.code == 'Space') {
-            $('.info').remove()
+           $('.info').remove()
             ccc.capture(ccc.page);
             ccc.page = ccc.page + 2;
             event.preventDefault();
@@ -65,6 +65,8 @@ ccc.init = function() {
             ccc.flipCameras();
         } else if (event.code == 'KeyR') {
             ccc.detectCameras();
+        } else if (event.code == 'KeyQ') {
+            location.reload();
         } else if (event.code == 'ArrowLeft') {
             var next = ccc.page - 4;
             if (next < 1) {
@@ -96,20 +98,25 @@ ccc.setCameras = function(cameras) {
     this.post('cameras', cameras);
 };
 ccc.detectCameras = function() {
-    $('.info').remove()
+    $('.info').remove();
+    $('#error').remove();
     this.post('detectcameras', '');
 };
 ccc.setTitle = function(title) {
     ccc.post('title', title);
     this.title = title;
     $('#titles').remove();
+    $('#quickhelp').remove();
+}
+ccc.getPath = function() {
+    return ccc.post('path', '');
 }
 ccc.updateError = function(error) {
     $('#error').remove();
     $('<div>').attr({
         'id': 'error'
     }).html(error).appendTo(document.body);
-
+    o
 }
 ccc.updatePages = function(pages) {
     this.pages = pages;
@@ -117,21 +124,24 @@ ccc.updatePages = function(pages) {
     this.loadPage(pages.length - 1);
 }
 ccc.updateTitles = function(titles) {
-    var new_book = 'Create New Book',
+    var new_book = $('<div>').attr({
+        'id': 'new-book'
+    }).html('create new book');
+
         t = $('<div>').attr({
             'id': 'titles'
         });
     titles.push(new_book);
     titles.forEach(function(title) {
-        $('<div>').html(title).on({
+        $('<div>').addClass('books').html(title).on({
             click: function() {
                 if (title == new_book) {
                     title = prompt('Enter title');
                     $('<div>').addClass('info').html('Press SPACE to capture first page').appendTo(document.body);
                 }
                 ccc.setTitle(title);
-            }
-        }).appendTo(t)
+            },
+    }).appendTo(t)
     });
     t.appendTo(document.body);
 };
@@ -166,7 +176,7 @@ ccc.getCameraName = function(i) {
         //name = cameras[i][0] + ' (' + cameras[i][1].split(',').pop() + ')';
         name = cameras[i][0] + ' (' + cameras[i][2] + ')';
     } else {
-        name = 'Camera Missing';
+        name = 'camera missing';
     }
     return name;
 }
