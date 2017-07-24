@@ -1,5 +1,7 @@
 body {
-    font-family: sans-serif;
+    font-family: "Dejavu Sans";
+    background-color: darkgrey;
+    padding:1em;
 }
 
 #error {
@@ -14,7 +16,7 @@ body {
 .info {
     text-align: center;
     margin-top: 23%;
-    color: black;
+    color: teal; 
     font-size: 48px;
     position: relative;
 }
@@ -36,7 +38,39 @@ body {
     font-size: 18px;
 }
 
-#titles {
+div#titles {
+    color:black;
     z-index: 10;
     position: absolute;
+    cursor: pointer;
+    font-variant: small-caps;
+    font-size:large;
+}
+
+div.books{
+    margin-bottom: 1em;
+}
+
+.books:hover {
+    color: crimson;
+}
+
+div#new-book {
+    font-variant: small-caps;
+    border: dotted;
+    border-radius: 5px;
+    padding: 5px;
+    padding-right: 6px;
+}
+   
+ul#quickhelp {
+    opacity: .6;
+    position: absolute;
+    right: 0;
+    padding-right:5em;
+    width: 30em;
+}
+
+li{
+    margin-bottom: 1em;
 }
