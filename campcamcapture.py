@@ -10,9 +10,11 @@ from queue import Queue
 from threading import Thread
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
-from tornado.web import StaticFileHandler, Application
+from tornado.web import StaticFileHandler, Application, RequestHandler
 from tornado.websocket import WebSocketHandler
 import webbrowser
+from io import BytesIO
+from zipfile import ZipFile
 
 import logging
 logger = logging.getLogger(__name__)
@@ -24,6 +26,29 @@ settings = {
     'title': 'Untitled'
 }
 base = 'scan'
+
+class ZipHandler(RequestHandler):
+    def get(self):
+        title = self.get_argument("title")
+        if title not in get_titles():
+            self.set_status(400)
+            return self.finish("no such title")
+        # build zip in bytesIO
+        zipname = title+'.zip'
+        f = BytesIO()
+        zf = ZipFile(f, 'w')
+        for dirname, subdirs, files in os.walk(os.path.join(base,title)):
+            zf.write(dirname)
+            for filename in files:
+                zf.write(os.path.join(dirname, filename))
+        zf.close()
+        self.set_header('Content-Type', 'application/zip')
+        self.set_header("Content-Disposition", "attachment; filename=%s" % zipname)
+        self.write(f.getvalue())
+        f.close()
+        self.finish()
+        
+
 
 def get_usbport(device):
     device = device.split(',')[-1].lstrip('0')
@@ -203,7 +228,8 @@ if __name__ == '__main__':
     static_path = os.path.abspath(os.path.dirname(__file__))
     handlers = [
         (r'/ws', WSHandler),
-        (r'/(.*)', StaticFileHandler, {'path': static_path, 'default_filename': 'index.html'}),
+        (r'/zip', ZipHandler),
+        (r'/(.*)', StaticFileHandler, {'path': static_path, 'default_filename': 'index.html'})
     ]
     options = {
         'debug': False,
