@@ -15,7 +15,7 @@ from tornado.websocket import WebSocketHandler
 import webbrowser
 from io import BytesIO
 from zipfile import ZipFile
-
+from shutil import rmtree
 import logging
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class ZipHandler(RequestHandler):
         zipname = title+'.zip'
         f = BytesIO()
         zf = ZipFile(f, 'w')
-        for dirname, subdirs, files in os.walk(os.path.join(base,title)):
+        for dirname, subdirs, files in os.walk(os.path.join(base, title)):
             zf.write(dirname)
             for filename in files:
                 zf.write(os.path.join(dirname, filename))
@@ -47,9 +47,23 @@ class ZipHandler(RequestHandler):
         self.write(f.getvalue())
         f.close()
         self.finish()
+
+
         
-
-
+class DelHandler(RequestHandler):
+    def get(self):
+        title = self.get_argument("title")
+        if title not in get_titles():
+            self.set_status(400)
+            return self.finish("no such title")
+        # check that we're safe
+        if not rmtree.avoids_symlink_attacks:
+            self.set_status(500)
+            return self.finish("delete operations not safe. cancelled.")
+        rmtree(os.path.join(base, title))
+        self.finish("File Deleted. <a href='/'> Back to index. </a>")
+        
+        
 def get_usbport(device):
     device = device.split(',')[-1].lstrip('0')
     p = subprocess.Popen(['lsusb', '-t'],
@@ -172,7 +186,7 @@ class Tasks(Thread):
                         trigger_event('cameras', settings['cameras'])
                     elif action == 'title':
                         update_title(data)
-                except:
+                 except:
                     logger.debug('fail', exc_info=True)
                     pass
             self.q.task_done()
@@ -229,7 +243,8 @@ if __name__ == '__main__':
     handlers = [
         (r'/ws', WSHandler),
         (r'/zip', ZipHandler),
-        (r'/(.*)', StaticFileHandler, {'path': static_path, 'default_filename': 'index.html'})
+        (r'/del', DelHandler),
+        (r'/(.*)', StaticFileHandler, {'path': static_path, 'default_filename': 'index.html'}),
     ]
     options = {
         'debug': False,

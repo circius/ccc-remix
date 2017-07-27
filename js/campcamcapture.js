@@ -116,34 +116,77 @@ ccc.updateError = function(error) {
     $('<div>').attr({
         'id': 'error'
     }).html(error).appendTo(document.body);
-    o
-}
+    
+};
 ccc.updatePages = function(pages) {
     this.pages = pages;
     this.page = pages.length + 1;
     this.loadPage(pages.length - 1);
-}
-ccc.updateTitles = function(titles) {
-    var new_book = $('<div>').attr({
-        'id': 'new-book'
-    }).html('create new book');
+};
 
-        t = $('<div>').attr({
-            'id': 'titles'
+ccc.updateTitles = function(titles) {
+    $menu = $('<div>').addClass('menu');
+    book_click = function(title){
+        ccc.setTitle(title);
+    };
+    
+    new_book_click = function(){
+        title = prompt('Enter title');
+        $('div')
+            .addClass('info')
+            .html('Press SPACE to capture first page')
+            .appendTo(document.body);
+        ccc.setTitle(title);
+    };
+    $new_book = $('<a>')
+        .addClass('new-book')
+        .html('create new book')
+        .on({
+            click: new_book_click.bind(window)
         });
-    titles.push(new_book);
-    titles.forEach(function(title) {
-        $('<div>').addClass('books').html(title).on({
-            click: function() {
-                if (title == new_book) {
-                    title = prompt('Enter title');
-                    $('<div>').addClass('info').html('Press SPACE to capture first page').appendTo(document.body);
-                }
-                ccc.setTitle(title);
-            },
-    }).appendTo(t)
-    });
-    t.appendTo(document.body);
+    for(var i=0; i<titles.length; i++){
+        console.log(titles[i]);
+        //add row
+        $('<div>')
+            .addClass('row')
+            .attr({'id':i})
+            .appendTo($menu);
+    }
+    $menu.appendTo(document.body);
+    for(var i=0; i<titles.length; i++){
+    // add first element (title-button)
+        $('<a>')
+            .addClass('title')
+        .html(titles[i])
+        .on({
+            click: book_click.bind(window,titles[i])}
+           )
+        .appendTo($('.row#'+i));
+    // add second element (zip-download)
+    $('<a>')
+        .attr({
+            'href':'zip?title='+titles[i]
+        })
+        .html('[zip]')
+        .appendTo($('.row#'+i));
+    // add third element (delete-book)
+    $('<a>')
+        .html('[del]')
+        .attr({
+            'href':'del?title='+titles[i]
+        })
+        .on({
+            click:
+            function () { return confirm ('Sure?');}}
+           )
+            .appendTo($('.row#'+i));
+    }
+    //add new-book button
+    $new_book
+        .appendTo(
+            $('<div>')
+                .addClass('row')
+                .appendTo('.menu'));
 };
 
 ccc.loadPage = function(page) {

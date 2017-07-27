@@ -1,5 +1,5 @@
 body {
-    font-family: "Dejavu Sans";
+    font-family: "Dejavu Sans", sans-serif;
     background-color: darkgrey;
     padding:1em;
 }
@@ -34,11 +34,11 @@ body {
     top: 50px;
     bottom:0;
     position: fixed;
-    color: white;
+    color: darkgrey;
     font-size: 18px;
 }
 
-div#titles {
+.menu {
     color:black;
     z-index: 10;
     position: absolute;
@@ -47,20 +47,30 @@ div#titles {
     font-size:large;
 }
 
-div.books{
+.row{
     margin-bottom: 1em;
 }
 
-.books:hover {
+
+a {
+    color:black;
+    text-decoration: none;
+}
+
+a:hover {
     color: crimson;
 }
 
-div#new-book {
-    font-variant: small-caps;
+.title{
+    font-size: 110%;
+    margin-right: .5em;
+}
+.new-book {
     border: dotted;
     border-radius: 5px;
     padding: 5px;
     padding-right: 6px;
+    margin-above: 300px;
 }
    
 ul#quickhelp {
