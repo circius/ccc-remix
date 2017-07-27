@@ -1,5 +1,16 @@
 # campcamcapture
 
+## reasons for fork
+
+Learning project for javascript, JQuery, tornado.web and websockets.
+
+## changes
+
++ Added provision of zipped copies of scan-folders.
++ Added a 'delete' interface to allow users to delete finished (exported) work.
++ Added a rudimentary guide to usage on the index.html.
++ Made some cosmetic changes to the stylesheet.
+
 ## Install
 
 install dependencies:
