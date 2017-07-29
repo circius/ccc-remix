@@ -1,5 +1,7 @@
 # campcamcapture
 
+Forked from https://r-w-x.org/campcamcapture.git
+
 ## reasons for fork
 
 Learning project for javascript, JQuery, tornado.web and websockets.
@@ -10,7 +12,7 @@ Learning project for javascript, JQuery, tornado.web and websockets.
 + Added a 'delete' interface to allow users to delete finished (exported) work.
 + Added a rudimentary guide to usage on the index.html.
 + Made some cosmetic changes to the stylesheet.
-
++ Corrected the overly-persistent 'cameras missing' error-message.
 ## Install
 
 install dependencies:
