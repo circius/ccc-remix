@@ -1,6 +1,7 @@
 body {
-    font-family: "Dejavu Sans", sans-serif;
-    background-color: darkgrey;
+    font-family: "Helvetica", sans-serif;
+    font-colour: #444444 ;
+    background-color: #eeeeee;
     padding:1em;
 }
 
@@ -34,7 +35,7 @@ body {
     top: 50px;
     bottom:0;
     position: fixed;
-    color: darkgrey;
+    color: #eeeeee;
     font-size: 18px;
 }
 
@@ -42,7 +43,6 @@ body {
     color:black;
     z-index: 10;
     position: absolute;
-    cursor: pointer;
     font-variant: small-caps;
     font-size:large;
 }
@@ -53,6 +53,7 @@ body {
 
 
 a {
+    cursor: pointer;
     color:black;
     text-decoration: none;
 }
@@ -61,26 +62,44 @@ a:hover {
     color: crimson;
 }
 
+.options {
+    float: right;
+}
 .title{
-    font-size: 110%;
     margin-right: .5em;
 }
 .new-book {
+    width: 100%;
+    display:inline-block;
+    text-align: center;
     border: dotted;
     border-radius: 5px;
-    padding: 5px;
-    padding-right: 6px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     margin-above: 300px;
 }
-   
+
 ul#quickhelp {
-    opacity: .6;
+    opacity: .8;
     position: absolute;
     right: 0;
-    padding-right:5em;
     width: 30em;
+    padding: 2em;
+    margin-right: 2em;
+}
+
+li {
+    padding: 3px;
+    list-style: cjk-ideographic;
 }
 
 li{
     margin-bottom: 1em;
+}
+
+h1{
+    cursor: auto;
+    width: 100%;
+    border-bottom: solid black 4px;
+    line-height: .9;
 }
